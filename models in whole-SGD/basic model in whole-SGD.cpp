@@ -30,8 +30,8 @@ double Q_1[MAX][MAX];//K*N
 int R[10][MAX][MAX]={0};//M*N
 
 
-FILE *fp1=fopen("/Users/vanellope/Desktop/毕业论文代码/ml-100k/u2.base","r");
-FILE *fp2=fopen("/Users/vanellope/Desktop/毕业论文代码/ml-100k/u2.test","r");
+FILE *fp1=fopen("ml-100k/u2.base","r");
+FILE *fp2=fopen("ml-100k/u2.test","r");
 
 
 double randdouble(){

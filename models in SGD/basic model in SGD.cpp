@@ -28,8 +28,8 @@ double er[MAX][MAX];//M*N
 int R[10][MAX][MAX]={0};//M*N
 
 
-FILE *fp1=fopen("/Users/vanellope/Desktop/毕业论文代码/ml-100k/u1.base","r");
-FILE *fp2=fopen("/Users/vanellope/Desktop/毕业论文代码/ml-100k/u1.test","r");
+FILE *fp1=fopen("ml-100k/u1.base","r");
+FILE *fp2=fopen("ml-100k/u1.test","r");
 
 void input(FILE* fp,int s){//第s个文件
     int i,j,rate,time;
