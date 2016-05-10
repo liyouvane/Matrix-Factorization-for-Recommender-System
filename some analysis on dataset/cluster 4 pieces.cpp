@@ -53,8 +53,8 @@ int num_type_i[5]={0};
 int dis_u[MAX][MAX]={0};
 int dis_i[MAX][MAX]={0};
 
-FILE *fp1=fopen("/ml-100k/u1.base","r");
-FILE *fp2=fopen("/ml-100k/u1.test","r");
+FILE *fp1=fopen("/Users/vanellope/Desktop/毕业论文代码/ml-100k/u1.base","r");
+FILE *fp2=fopen("/Users/vanellope/Desktop/毕业论文代码/ml-100k/u1.test","r");
 
 double randdouble(){
     double t;
@@ -93,33 +93,36 @@ void cluster(){
             dis_i[i][j]=distance(T1[i],T1[j],M);
         }
     }
-    ker_u[1]=1;
+    ker_u[1]=10;
     type_u[ker_u[1]]=1;
-    ker_u[2]=2;
+    ker_u[2]=20;
     type_u[ker_u[2]]=2;
     for (int i=1;i<=M;i++){
-        double dist1=0;
-        double dist2=0;
-        num_type_u[1]=0;
-        num_type_u[2]=0;
-        for (int j=1;j<=M;j++){
-            if (type_u[j]==1){
-                dist1+=dis_u[i][j];
-                num_type_u[1]++;
-
+        if (type_u[i]==0){
+            double dist1=0;
+            double dist2=0;
+            num_type_u[1]=0;
+            num_type_u[2]=0;
+            for (int j=1;j<=M;j++){
+                if (type_u[j]==1){
+                    dist1+=dis_u[i][j];
+                    num_type_u[1]++;
+                }
+                if (type_u[j]==2){
+                    dist2+=dis_u[i][j];
+                    num_type_u[2]++;
+                }
             }
-            if (type_u[j]==2){
-                dist2+=dis_u[i][j];
+            dist1=dist1/(double)num_type_u[1];
+            dist2=dist2/(double)num_type_u[2];
+            if (dist1>=dist2) {
+                type_u[i]=1;
+                num_type_u[1]++;
+            }
+            else {
+                type_u[i]=2;
                 num_type_u[2]++;
             }
-        }
-        dist1=dist1/(double)num_type_u[1];
-        dist2=dist2/(double)num_type_u[2];
-        if (dist1>=dist2) {
-            type_u[i]=1;
-        }
-        else {
-            type_u[i]=2;
         }
     }
     ker_i[1]=2;
@@ -127,27 +130,31 @@ void cluster(){
     ker_i[2]=1;
     type_i[ker_i[2]]=2;
     for (int i=1;i<=N;i++){
-        double dist1=0;
-        double dist2=0;
-        num_type_i[1]=0;
-        num_type_i[2]=0;
-        for (int j=1;j<=N;j++){
-            if (type_i[j]==1){
-                dist1+=dis_i[i][j];
+        if (type_i[i]==0){
+            double dist1=0;
+            double dist2=0;
+            num_type_i[1]=0;
+            num_type_i[2]=0;
+            for (int j=1;j<=N;j++){
+                if (type_i[j]==1){
+                    dist1+=dis_i[i][j];
+                    num_type_i[1]++;
+                }
+                if (type_i[j]==2){
+                    dist2+=dis_i[i][j];
+                    num_type_i[2]++;
+                }
+            }
+            dist1=dist1/(double)num_type_i[1];
+            dist2=dist2/(double)num_type_i[2];
+            if (dist1>=dist2) {
+                type_i[i]=1;
                 num_type_i[1]++;
             }
-            if (type_i[j]==2){
-                dist2+=dis_i[i][j];
+            else {
+                type_i[i]=2;
                 num_type_i[2]++;
             }
-        }
-        dist1=dist1/(double)num_type_i[1];
-        dist2=dist2/(double)num_type_i[2];
-        if (dist1>=dist2) {
-            type_i[i]=1;
-        }
-        else {
-            type_i[i]=2;
         }
     }
     cout<<num_type_u[1]<<'\n'<<num_type_u[2]<<'\n'<<num_type_i[1]<<'\n'<<num_type_i[2]<<'\n';

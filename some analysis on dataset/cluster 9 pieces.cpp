@@ -125,12 +125,18 @@ void cluster(){
         dist1=dist1/(double)num_type_u[1];
         dist2=dist2/(double)num_type_u[2];
         dist3=dist3/(double)num_type_u[3];
-        if (dist1>=dist2&&dist1>=dist3)
+        if (dist1>=dist2&&dist1>=dist3){
             type_u[i]=1;
-        if (dist2>dist1&&dist2>=dist3)
+            num_type_u[1]++;
+        }
+        if (dist2>dist1&&dist2>=dist3){
             type_u[i]=2;
-        if (dist3>dist1&&dist3>dist2)
+            num_type_u[2]++;
+        }
+        if (dist3>dist1&&dist3>dist2){
             type_u[i]=3;
+            num_type_u[3]++;
+        }
     }
     ker_i[1]=10;
     type_i[ker_i[1]]=1;
@@ -162,12 +168,18 @@ void cluster(){
         dist1=dist1/(double)num_type_i[1];
         dist2=dist2/(double)num_type_i[2];
         dist3=dist3/(double)num_type_i[3];
-        if (dist1>=dist2&&dist1>=dist3)
+        if (dist1>=dist2&&dist1>=dist3){
             type_i[i]=1;
-        if (dist2>dist1&&dist2>=dist3)
+            num_type_i[1]++;
+        }
+        if (dist2>dist1&&dist2>=dist3){
             type_i[i]=2;
-        if (dist3>dist1&&dist3>dist2)
+            num_type_i[2]++;
+        }
+        if (dist3>dist1&&dist3>dist2){
             type_i[i]=3;
+            num_type_i[3]++;
+        }
     }
     cout<<num_type_u[1]<<'\n'<<num_type_u[2]<<'\n'<<num_type_u[3]<<'\n'<<num_type_i[1]<<'\n'<<num_type_i[2]<<'\n'<<num_type_i[3]<<'\n';
     int num[20]={0};
