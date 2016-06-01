@@ -1,6 +1,6 @@
 //
 //  main.cpp
-//  mf with user easy biase
+//  mf with item easy biases
 //
 //  Created by Vanellope on 4/20/16.
 //  Copyright © 2016 Vanellope. All rights reserved.
@@ -12,9 +12,8 @@
 #define M 943
 //#define N 4
 #define N 1682
-double gama=0.002; //学习速率
 #define lamda 0.01//正则项系数
-#define Gen 5000
+#define Gen 500
 //#define Gen 50000
 
 
@@ -23,6 +22,7 @@ double gama=0.002; //学习速率
 #include <cstdlib>
 using namespace std;
 
+double gama=0.001; //学习速率
 double sum=0;
 double miu;//average of all the ratings
 double bu[MAX];//M
@@ -54,7 +54,7 @@ void input(FILE* fp,int s){//第s个文件
 }
 
 void initial(){//采用了随机初始化
-    int num[M]={0};
+    long num[N]={0};
     for (int i=1;i<=M;i++){
         for(int j=1;j<=K;j++){
             P[i][j]=randdouble()*sqrt(3.0/K);
@@ -65,63 +65,74 @@ void initial(){//采用了随机初始化
             Q[i][j]=randdouble()*sqrt(3.0/K);
         }
     }
-    for (int i=1;i<=M;i++)
-        bu[i]=0;
+    for (int j=1;j<=N;j++)
+        bi[j]=0;
+  //  cout<<bi[599]<<endl;
     for (int i=1;i<=M;i++){
         for (int j=1;j<=N;j++){
             e[i][j]=0;
             er[i][j]=0;
-            bu[i]+=R[1][i][j];
+            bi[j]+=R[1][i][j];
+           // if(j==599) cout<<bi[599]<<endl;
             if (R[1][i][j]>0)
-                num[i]++;
+                num[j]++;
         }
     }
-    for (int i=1;i<=M;i++)
-        if (num[i]==0) bu[i]=0;
-        else bu[i]=bu[i]/num[i];
+    //cout<<num[599]<<endl;
+    for (int j=1;j<=N;j++)
+        if (num[j]==0) bi[j]=0;
+        else bi[j]=bi[j]/num[j];
+    //cout<<'1';
+   // cout<<bi[599]<<endl;
     return ;
 }
 
-
 void evaluate(){
-    long count=0;
+    int count=0;
+  //  cout<<bi[599]<<endl;
     for (int i=1;i<=M;i++){
         for (int j=1;j<=N;j++){
             if (R[2][i][j]>0){
-                er[i][j]=R[2][i][j]-bu[i];
                 count++;
+                
+                er[i][j]=R[2][i][j]-bi[j];
+              //  if(i==7&&j==599) cout<<R[2][i][j]<<' '<<bi[j]<<' '<<er[i][j]<<endl;
                 for (int k=1;k<=K;k++){
                     er[i][j]=er[i][j]-P[i][k]*Q[k][j];
                 }
             }
         }
     }
+  //  cout<<er[7][599];
     double sumerror=0;
     for (int i=1;i<=M;i++){
-        for (int j=1;j<=N;j++){
-            sumerror+=pow(er[i][j],2.0);
-            //cout<<sumerror<<'\n';
-        }
+        for (int j=1;j<=N;j++)
+            if(R[2][i][j]>0)
+            {
+              //  if(i==7&&j==599) cout<<"FFFF "<<er[i][j]<<' '<<i<<' '<<j<<'\n';
+                sumerror+=pow(er[i][j],2.0);
+               // cout<<sumerror<<' '<<i<<' '<<j<<'\n';
+                }
     }
-    //cout<<count;
     sumerror=sqrt(sumerror/count);
     cout<<sumerror<<'\n';
     return ;
 }
 
 void matrixf(){
-    double pre=0;
+    long double pre=0;
     for (int t=1;t<=Gen;t++){
-        double loss=0;
+        long double loss=0;
         for (int i=1;i<=M;i++){
             for (int j=1;j<=N;j++){
                 if (R[1][i][j]>0){
-                    e[i][j]=R[1][i][j]-bu[i];
+                    e[i][j]=R[1][i][j]-bi[j];
                     for (int k=1;k<=K;k++)
                         e[i][j]=e[i][j]-P[i][k]*Q[k][j];
                 }
             }
         }
+        //update parameters
         for(int i=1;i<=M;i++)
             for(int k=1;k<=K;k++){
                 P_1[i][k]=P[i][k];
@@ -145,9 +156,9 @@ void matrixf(){
         for (int i=1;i<=M;i++){
             for (int j=1;j<=N;j++){
                 if (R[1][i][j]>0){
-                    loss+=pow(e[i][j],2)+lamda*pow(bu[i],2.0);
+                    loss+=pow(e[i][j],2)+lamda*pow(bi[j],2.0);
                     for (int k=1;k<=K;k++){
-                        loss+=lamda*(pow(P[i][k],2.0)+pow(Q[k][j],2.0));
+                        loss+=lamda*(pow(P[i][k],2)+pow(Q[k][j],2));
                     }
                 }
                 //cout<<e[i][j]<<'\n';
@@ -156,7 +167,7 @@ void matrixf(){
         if (t>=2){
             if (pre<loss)
                 gama=gama/2.0;
-            //  if (fabs(pre-loss)<=1) break;
+            //if (fabs(pre-loss)<=1) break;
         }
         pre=loss;
         if (loss<0.0001) break;
@@ -165,15 +176,16 @@ void matrixf(){
         if (t%50==0||1) cout<<"loss is "<<loss<<'\n';
         if (t%50==0) evaluate();
     }
+  //  cout<<bi[599]<<endl;
     return ;
 }
+
 
 int main(){
     input(fp1,1);
     input(fp2,2);
     initial();
     matrixf();
-    //evaluate();
     system("pause");
     return 0;
 }
